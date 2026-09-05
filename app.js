@@ -12,12 +12,12 @@ if (typeof module !== 'undefined') module.exports = {frameForProgress, composeIn
 if (typeof document !== 'undefined') (() => {
   const $ = selector => document.querySelector(selector);
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
-  const debug = window.cvdDebug = {frame:1, drawnFrame:0, progress:0, loaded:0, failed:0, reducedMotion:reduced.matches, sculpture:{rotationX:-.25,rotationY:.4,shape:'knot',color:'chrome'}, mailto:''};
+  const debug = window.cvdDebug = {frame:120, drawnFrame:0, progress:0, loaded:0, failed:0, reducedMotion:reduced.matches, sculpture:{rotationX:-.25,rotationY:.4,shape:'knot',color:'chrome'}, mailto:''};
   const hero = $('.hero'), canvas = $('#hero-canvas'), context = canvas.getContext('2d');
   const HERO_COUNT = 120;
   const VIDEO_END = 0.55;
   const frames = new Array(HERO_COUNT + 1), pending = new Set();
-  let desired = 1, scheduled = false, size = {width:0,height:0}, started = false;
+  let desired = 120, scheduled = false, size = {width:0,height:0}, started = false;
   function resizeHero() {
     const rect = canvas.getBoundingClientRect(), dpr = Math.min(window.devicePixelRatio || 1, 2);
     canvas.width = Math.round(rect.width * dpr); canvas.height = Math.round(rect.height * dpr);
@@ -55,7 +55,7 @@ if (typeof document !== 'undefined') (() => {
     if(started || reduced.matches) return;
     started=true;
     // Sparse keyframes first keep fast scrolling responsive before the full sequence arrives.
-    const order=[1,HERO_COUNT,Math.round(HERO_COUNT/2),Math.round(HERO_COUNT/4),Math.round(HERO_COUNT*.75),...Array.from({length:HERO_COUNT},(_,i)=>i+1)].filter((n,i,a)=>n>=1&&n<=HERO_COUNT&&a.indexOf(n)===i);
+    const order=[HERO_COUNT,1,Math.round(HERO_COUNT/2),Math.round(HERO_COUNT*.75),Math.round(HERO_COUNT/4),...Array.from({length:HERO_COUNT},(_,i)=>HERO_COUNT-i)].filter((n,i,a)=>n>=1&&n<=HERO_COUNT&&a.indexOf(n)===i);
     let cursor=0;
     async function worker(){while(cursor<order.length){await loadFrame(order[cursor++]);}}
     await Promise.all(Array.from({length:5},worker));
@@ -66,7 +66,8 @@ if (typeof document !== 'undefined') (() => {
     const distance=hero.offsetHeight-window.innerHeight;
     const progress=reduced.matches?0:Math.max(0,Math.min(1,-rect.top/Math.max(1,distance)));
     const videoProgress=Math.min(1, progress / VIDEO_END);
-    desired=progress>=VIDEO_END?HERO_COUNT:frameForProgress(videoProgress, HERO_COUNT);
+    const forward=frameForProgress(videoProgress, HERO_COUNT);
+    desired=progress>=VIDEO_END?1:(HERO_COUNT+1-forward);
     debug.frame=desired;debug.progress=progress;
     $('#scroll-progress').style.width=(progress*100)+'%';
     const frameEl=$('#frame-number'); if(frameEl) frameEl.textContent=String(desired).padStart(2,'0');
