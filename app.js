@@ -178,52 +178,60 @@ if (typeof document !== 'undefined') (() => {
   (function bindSky(){
     const canvas=$('#sky'), section=$('.dream');
     if(!canvas||!section) return;
-    const ctx=canvas.getContext('2d');
-    let w=0,h=0,stars=[],raf=0;
+    const gl=canvas.getContext('webgl',{antialias:false,alpha:false});
     const pointer={x:0,y:0,tx:0,ty:0};
-    function seed(){
-      const n=Math.min(520, Math.floor((w*h)/2800));
-      stars=Array.from({length:n},()=>({
-        x:Math.random()*w, y:Math.random()*h,
-        z:.25+Math.random()*1.75,
-        s:.4+Math.random()*1.6,
-        tw:Math.random()*Math.PI*2
-      }));
-    }
+    let raf=0, start=performance.now();
+    if(!gl) return;
+    const vs='attribute vec2 a;void main(){gl_Position=vec4(a,0,1);}';
+    const fs=[
+      'precision highp float;',
+      'uniform vec2 u_res,u_mouse;',
+      'uniform float u_time;',
+      'float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}',
+      'float noise(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(hash(i),hash(i+vec2(1,0)),f.x),mix(hash(i+vec2(0,1)),hash(i+vec2(1,1)),f.x),f.y);}',
+      'float fbm(vec2 p){float v=0.,a=.5;for(int i=0;i<5;i++){v+=a*noise(p);p*=2.03;a*=.5;}return v;}',
+      'void main(){vec2 uv=gl_FragCoord.xy/u_res;uv.x*=u_res.x/max(u_res.y,.001);',
+      'vec2 m=u_mouse; uv+=m*.28;',
+      'vec2 p=uv*vec2(2.5,4.0); p.x+=u_time*.03; p.y+=m.y*.4;',
+      'float warp=fbm(p*.75+vec2(m.x,m.y)*1.8);',
+      'float n=fbm(p+warp*1.35);',
+      'n=smoothstep(.1,.75,n);',
+      'vec3 cyan=vec3(.39,.86,.92); vec3 red=vec3(.94,.33,.33); vec3 ink=vec3(.02,.02,.03);',
+      'vec3 col=mix(cyan,red,smoothstep(.22,.78,fbm(p*1.15+2.7)));',
+      'col=mix(ink,col,n);',
+      'col+=(hash(gl_FragCoord.xy+floor(u_time*8.))-.5)*.08;',
+      'gl_FragColor=vec4(col,1.);}'
+    ].join('');
+    function sh(type,src){const s=gl.createShader(type);gl.shaderSource(s,src);gl.compileShader(s);return s;}
+    const prog=gl.createProgram();
+    gl.attachShader(prog,sh(gl.VERTEX_SHADER,vs));
+    gl.attachShader(prog,sh(gl.FRAGMENT_SHADER,fs));
+    gl.linkProgram(prog); gl.useProgram(prog);
+    const buf=gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER,buf);
+    gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,1,-1,-1,1,1,1]),gl.STATIC_DRAW);
+    const loc=gl.getAttribLocation(prog,'a'); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc,2,gl.FLOAT,false,0,0);
+    const uRes=gl.getUniformLocation(prog,'u_res'), uMouse=gl.getUniformLocation(prog,'u_mouse'), uTime=gl.getUniformLocation(prog,'u_time');
     function resize(){
-      const r=section.getBoundingClientRect(), dpr=Math.min(window.devicePixelRatio||1,2);
-      w=r.width; h=r.height;
-      canvas.width=Math.round(w*dpr); canvas.height=Math.round(h*dpr);
-      ctx.setTransform(dpr,0,0,dpr,0,0);
-      seed();
+      const r=section.getBoundingClientRect(), dpr=Math.min(window.devicePixelRatio||1,1.5);
+      canvas.width=Math.max(2,Math.round(r.width*dpr)); canvas.height=Math.max(2,Math.round(r.height*dpr));
+      gl.viewport(0,0,canvas.width,canvas.height);
     }
-    function draw(t){
+    function draw(now){
       raf=requestAnimationFrame(draw);
-      pointer.x+=(pointer.tx-pointer.x)*.06;
-      pointer.y+=(pointer.ty-pointer.y)*.06;
-      const g=ctx.createLinearGradient(0,0,0,h);
-      g.addColorStop(0,'#020814');
-      g.addColorStop(.72,'#0a2748');
-      g.addColorStop(1,'#8eb8d8');
-      ctx.fillStyle=g; ctx.fillRect(0,0,w,h);
-      const ox=pointer.x*28, oy=pointer.y*18;
-      for(const st of stars){
-        const tw=.45+.55*Math.sin(t*0.0016+st.tw);
-        ctx.globalAlpha=tw;
-        ctx.fillStyle='#fff';
-        const px=st.x+ox*st.z, py=st.y+oy*st.z;
-        ctx.beginPath(); ctx.arc(px,py,st.s*st.z*.55,0,Math.PI*2); ctx.fill();
-      }
-      ctx.globalAlpha=1;
+      pointer.x+=(pointer.tx-pointer.x)*.05; pointer.y+=(pointer.ty-pointer.y)*.05;
+      gl.uniform2f(uRes,canvas.width,canvas.height);
+      gl.uniform2f(uMouse,pointer.x,pointer.y);
+      gl.uniform1f(uTime, reduced.matches?0:(now-start)*.001);
+      gl.drawArrays(gl.TRIANGLE_STRIP,0,4);
     }
     section.addEventListener('pointermove',e=>{
       const r=section.getBoundingClientRect();
-      pointer.tx=((e.clientX-r.left)/r.width-.5)*2;
-      pointer.ty=((e.clientY-r.top)/r.height-.5)*2;
+      pointer.tx=((e.clientX-r.left)/Math.max(1,r.width)-.5)*2;
+      pointer.ty=(.5-(e.clientY-r.top)/Math.max(1,r.height))*2;
     },{passive:true});
     new ResizeObserver(resize).observe(section);
     resize();
-    if(reduced.matches){draw(0);cancelAnimationFrame(raf);}
+    if(reduced.matches){draw(start);cancelAnimationFrame(raf);}
     else requestAnimationFrame(draw);
   })();
 
