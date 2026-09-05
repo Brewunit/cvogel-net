@@ -6,7 +6,7 @@
 .hero .monitor-stage img,.hero .monitor-stage canvas{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:#050505}
 #hero-snake{position:absolute;inset:0;z-index:2;width:100%;height:100%;pointer-events:none}
 .quote-btn{position:relative;z-index:4}
-.quote-btn.is-pointed{box-shadow:0 0 0 0 rgba(244,241,234,.55);animation:quotePulse 1.05s ease-out 2}
+.quote-btn.is-pointed{background:#f4f1ea;color:#111;animation:quotePulse .7s ease-out infinite}
 .hero-sticky{position:sticky;top:0;width:100%;height:100svh;min-height:0;max-height:none;padding:0;overflow:hidden}
 .hero .monitor-stage{position:absolute;inset:0;width:100%;height:100%;min-height:0;max-height:none;transform:none;mask-image:none;-webkit-mask-image:none;z-index:0}
 .hero .monitor-stage:after{content:none;box-shadow:none}
@@ -76,7 +76,7 @@
   .dream-sticky{position:relative}
 }
 @media(prefers-reduced-motion:reduce){.hero{height:100svh;min-height:0}.hero-sticky{position:relative}.hero-bottom .progress-track{display:none}#hero-snake{display:none}}
-@keyframes quotePulse{0%{box-shadow:0 0 0 0 rgba(244,241,234,.5)}70%{box-shadow:0 0 0 16px rgba(244,241,234,0)}100%{box-shadow:0 0 0 0 rgba(244,241,234,0)}}
+@keyframes quotePulse{0%{box-shadow:0 0 0 0 rgba(244,241,234,.9);transform:scale(1)}55%{box-shadow:0 0 0 26px rgba(244,241,234,0);transform:scale(1.08)}100%{box-shadow:0 0 0 0 rgba(244,241,234,0);transform:scale(1)}}
 .quote-page{background:#111;color:#f0f0e9;min-height:100svh}
 .quote-header{position:relative;inset:auto}
 .quote-main{max-width:34rem;padding:8vh var(--gutter) 12vh}

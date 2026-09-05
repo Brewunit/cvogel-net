@@ -49,11 +49,12 @@ if (typeof document !== 'undefined') (() => {
     const sticky=$('.hero-sticky'), btn=$('.quote-btn');
     if(!sticky||!btn) return [];
     const sr=sticky.getBoundingClientRect(), br=btn.getBoundingClientRect();
-    const start={x:sr.width*0.16, y:sr.height*0.38};
+    const x=Math.max(28, sr.width*0.045);
+    const start={x, y:Math.max(72, sr.height*0.11)};
     const end={x:br.left-sr.left+br.width/2, y:br.top-sr.top+br.height/2};
-    const midX=start.x+(end.x-start.x)*0.58;
-    return [start,{x:midX,y:start.y},{x:midX,y:end.y},end];
+    return [start,{x, y:end.y},end];
   }
+  function easeOut(t){t=Math.max(0,Math.min(1,t)); return 1-Math.pow(1-t,2);}
   function snakeLength(pts){
     let n=0; for(let i=1;i<pts.length;i++) n+=Math.hypot(pts[i].x-pts[i-1].x,pts[i].y-pts[i-1].y); return n;
   }
@@ -79,29 +80,34 @@ if (typeof document !== 'undefined') (() => {
     const pts=snakeCorners(); if(pts.length<2) return;
     const total=snakeLength(pts);
     let head=0, tail=0, pulse=0;
-    if(progress<SNAKE_GROW){head=(progress-VIDEO_END)/(SNAKE_GROW-VIDEO_END);}
+    if(progress<SNAKE_GROW){head=easeOut((progress-VIDEO_END)/(SNAKE_GROW-VIDEO_END));}
     else if(progress<SNAKE_HOLD){head=1; pulse=(progress-SNAKE_GROW)/(SNAKE_HOLD-SNAKE_GROW);}
-    else if(progress<SNAKE_GONE){head=1; tail=(progress-SNAKE_HOLD)/(SNAKE_GONE-SNAKE_HOLD);}
+    else if(progress<SNAKE_GONE){head=1; tail=easeOut((progress-SNAKE_HOLD)/(SNAKE_GONE-SNAKE_HOLD));}
     else {head=1; tail=1;}
     if(head<=tail){if(btn) btn.classList.remove('is-pointed'); snakePulse=false; return;}
-    snakeCtx.lineCap='square'; snakeCtx.lineJoin='miter';
-    snakeCtx.strokeStyle='#f4f1ea'; snakeCtx.lineWidth=2;
+    snakeCtx.lineCap='round'; snakeCtx.lineJoin='round';
+    snakeCtx.strokeStyle='#f4f1ea'; snakeCtx.lineWidth=8;
+    snakeCtx.shadowColor='rgba(244,241,234,.55)'; snakeCtx.shadowBlur=12;
     snakeCtx.beginPath();
-    const steps=48;
+    const steps=96;
     for(let i=0;i<=steps;i++){
       const t=tail+(head-tail)*(i/steps);
       const p=snakeAt(pts,t,total);
       if(i===0) snakeCtx.moveTo(p.x,p.y); else snakeCtx.lineTo(p.x,p.y);
     }
     snakeCtx.stroke();
+    snakeCtx.shadowBlur=0;
     const tip=snakeAt(pts,head,total);
     snakeCtx.fillStyle='#f4f1ea';
-    snakeCtx.fillRect(tip.x-2,tip.y-2,4,4);
+    snakeCtx.beginPath(); snakeCtx.arc(tip.x,tip.y,5,0,Math.PI*2); snakeCtx.fill();
     if(pulse>0 && pulse<1){
-      const r=6+pulse*18;
-      snakeCtx.strokeStyle='rgba(244,241,234,'+(1-pulse)+')';
-      snakeCtx.lineWidth=1.5;
-      snakeCtx.beginPath(); snakeCtx.arc(tip.x,tip.y,r,0,Math.PI*2); snakeCtx.stroke();
+      for(let k=0;k<3;k++){
+        const local=(pulse+k/3)%1;
+        const r=10+local*42;
+        snakeCtx.strokeStyle='rgba(244,241,234,'+(1-local)+')';
+        snakeCtx.lineWidth=3;
+        snakeCtx.beginPath(); snakeCtx.arc(tip.x,tip.y,r,0,Math.PI*2); snakeCtx.stroke();
+      }
       if(btn && !snakePulse){btn.classList.add('is-pointed'); snakePulse=true;}
     } else if(btn && (pulse<=0 || tail>0.05)){
       btn.classList.remove('is-pointed'); if(tail>0.05) snakePulse=false;
