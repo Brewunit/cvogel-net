@@ -16,7 +16,7 @@ if (typeof document !== 'undefined') (() => {
   const hero = $('.hero'), canvas = $('#hero-canvas'), context = canvas.getContext('2d');
   const HERO_COUNT = 120;
   const HERO_STOP = 20;
-  const VIDEO_END = 0.55;
+  const VIDEO_END = 0.36;
   const frames = new Array(HERO_COUNT + 1), pending = new Set();
   let desired = 120, scheduled = false, size = {width:0,height:0}, started = false;
   function resizeHero() {
@@ -43,7 +43,7 @@ if (typeof document !== 'undefined') (() => {
     canvas.classList.add('ready'); debug.drawnFrame=index;
   }
   const snakeCanvas=$('#hero-snake'), snakeCtx=snakeCanvas&&snakeCanvas.getContext('2d');
-  const SNAKE_GROW=0.74, SNAKE_HOLD=0.84, SNAKE_GONE=0.96;
+  const SNAKE_GROW=0.52, SNAKE_HOLD=0.58, SNAKE_GONE=0.68, SNAKE_PULSE_END=0.98;
   let snakePulse=false;
   function snakeCorners(){
     const sticky=$('.hero-sticky'), btn=$('.quote-btn');
@@ -83,7 +83,21 @@ if (typeof document !== 'undefined') (() => {
     if(progress<SNAKE_GROW){head=easeOut((progress-VIDEO_END)/(SNAKE_GROW-VIDEO_END));}
     else if(progress<SNAKE_HOLD){head=1; pulse=(progress-SNAKE_GROW)/(SNAKE_HOLD-SNAKE_GROW);}
     else if(progress<SNAKE_GONE){head=1; tail=easeOut((progress-SNAKE_HOLD)/(SNAKE_GONE-SNAKE_HOLD));}
-    else {head=1; tail=1;}
+    else if(progress<SNAKE_PULSE_END){
+      if(btn) btn.classList.add('is-pointed');
+      snakePulse=true;
+      const br=btn.getBoundingClientRect();
+      const cx=br.left-rect.left+br.width/2, cy=br.top-rect.top+br.height/2;
+      const hold=(progress-SNAKE_GONE)/(SNAKE_PULSE_END-SNAKE_GONE);
+      for(let k=0;k<3;k++){
+        const local=(hold*2.2+k/3)%1;
+        snakeCtx.strokeStyle='rgba(244,241,234,'+(1-local)*0.9+')';
+        snakeCtx.lineWidth=3;
+        snakeCtx.beginPath(); snakeCtx.arc(cx,cy,14+local*48,0,Math.PI*2); snakeCtx.stroke();
+      }
+      return;
+    }
+    else {if(btn) btn.classList.remove('is-pointed'); snakePulse=false; return;}
     if(head<=tail){if(btn) btn.classList.remove('is-pointed'); snakePulse=false; return;}
     snakeCtx.lineCap='round'; snakeCtx.lineJoin='round';
     snakeCtx.strokeStyle='#f4f1ea'; snakeCtx.lineWidth=8;
@@ -109,8 +123,10 @@ if (typeof document !== 'undefined') (() => {
         snakeCtx.beginPath(); snakeCtx.arc(tip.x,tip.y,r,0,Math.PI*2); snakeCtx.stroke();
       }
       if(btn && !snakePulse){btn.classList.add('is-pointed'); snakePulse=true;}
-    } else if(btn && (pulse<=0 || tail>0.05)){
-      btn.classList.remove('is-pointed'); if(tail>0.05) snakePulse=false;
+    } else if(btn && tail>0){
+      btn.classList.add('is-pointed'); snakePulse=true;
+    } else if(btn && pulse<=0){
+      btn.classList.remove('is-pointed'); snakePulse=false;
     }
   }
   function loadFrame(index) {
