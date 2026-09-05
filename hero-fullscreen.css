@@ -56,17 +56,17 @@
   .site-header nav>a{display:none!important}
   .site-header nav>a[href="#work"],.site-header nav>.nav-contact{display:inline-flex!important}
   .hero .monitor-stage,.can-media{
-    inset:auto;
-    top:48%;
-    left:50%;
-    width:82vw;
-    max-width:340px;
-    aspect-ratio:16/9;
-    height:auto;
-    transform:translate(-50%,-50%);
+    inset:0;
+    top:0;
+    left:0;
+    width:100%;
+    max-width:none;
+    height:100%;
+    aspect-ratio:auto;
+    transform:none;
   }
   .hero .monitor-stage img,.hero .monitor-stage canvas,
-  .can-media img,.can-media canvas{object-fit:contain;background:#050505}
+  .can-media img,.can-media canvas{object-fit:cover;background:#050505}
   .can-services li{font-size:clamp(28px,9vw,48px)}
   .can-bar{font-size:11px}
   .feed-rail{grid-template-columns:repeat(2,minmax(0,1fr));max-width:none;width:100%}
