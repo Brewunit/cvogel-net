@@ -36,7 +36,8 @@ if (typeof document !== 'undefined') (() => {
     if(!size.width || !image.naturalWidth) return;
     const fit=window.matchMedia('(max-width:640px)').matches?Math.min:Math.max;
     const scale=fit(size.width/image.naturalWidth,size.height/image.naturalHeight);
-    context.clearRect(0,0,size.width,size.height);
+    context.fillStyle='#050505';
+    context.fillRect(0,0,size.width,size.height);
     context.drawImage(image,(size.width-image.naturalWidth*scale)/2,(size.height-image.naturalHeight*scale)/2,image.naturalWidth*scale,image.naturalHeight*scale);
     canvas.classList.add('ready'); debug.drawnFrame=index;
   }
@@ -119,7 +120,8 @@ if (typeof document !== 'undefined') (() => {
       if(!size.width || !image.naturalWidth) return;
       const fit=window.matchMedia('(max-width:640px)').matches?Math.min:Math.max;
       const scale=fit(size.width/image.naturalWidth,size.height/image.naturalHeight);
-      context.clearRect(0,0,size.width,size.height);
+      context.fillStyle='#111';
+      context.fillRect(0,0,size.width,size.height);
       context.drawImage(image,(size.width-image.naturalWidth*scale)/2,(size.height-image.naturalHeight*scale)/2,image.naturalWidth*scale,image.naturalHeight*scale);
       canvas.classList.add('ready'); bag.drawnFrame=index;
     }
