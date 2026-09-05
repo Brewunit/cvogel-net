@@ -5,9 +5,9 @@
 .hero .monitor-stage:after{content:none;box-shadow:none}
 .hero .monitor-stage img,.hero .monitor-stage canvas{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:#050505}
 .hero-services{position:absolute;z-index:3;left:var(--gutter);right:var(--gutter);bottom:22vh;margin:0;padding:0;list-style:none;pointer-events:none}
-.hero-services li{font-family:Archivo,Arial,sans-serif;font-size:clamp(36px,6.2vw,92px);line-height:.95;letter-spacing:-.05em;font-weight:700;color:#f4f1ea;opacity:0;transform:translate3d(0,42px,0);filter:blur(10px);transition:opacity .7s cubic-bezier(.22,1,.36,1),transform .7s cubic-bezier(.22,1,.36,1),filter .7s cubic-bezier(.22,1,.36,1);text-shadow:0 12px 32px rgba(0,0,0,.45)}
+.hero-services li{font-family:Arial,Helvetica,sans-serif;font-size:clamp(11px,1.15vw,14px);line-height:1;letter-spacing:.42em;text-transform:uppercase;font-weight:400;color:#f4f1ea;opacity:0;transform:translate3d(0,14px,0);filter:none;transition:opacity .55s ease,transform .55s ease;text-shadow:0 8px 24px rgba(0,0,0,.45)}
 .hero-services li.is-on{opacity:1;transform:none;filter:none}
-.hero-services li+li{margin-top:10px}
+.hero-services li+li{margin-top:14px}
 .hero-sticky{position:sticky;top:0;width:100%;height:100svh;min-height:0;max-height:none;padding:0;overflow:hidden}
 .hero .monitor-stage{position:absolute;inset:0;width:100%;height:100%;min-height:0;max-height:none;transform:none;mask-image:none;-webkit-mask-image:none;z-index:0}
 .hero .monitor-stage:after{content:none;box-shadow:none}
@@ -58,7 +58,8 @@
   .site-header nav>a[href="#work"],.site-header nav>.nav-contact{display:inline-flex!important}
   .hero .monitor-stage img,.hero .monitor-stage canvas,
   .can-media img,.can-media canvas{object-fit:contain;background:#050505}
-  .hero-services li,.can-services li{font-size:clamp(28px,9vw,48px)}
+  .hero-services li{font-size:11px;letter-spacing:.32em}
+  .can-services li{font-size:clamp(28px,9vw,48px)}
   .hero-services{bottom:16vh}
   .can-bar{font-size:11px}
   .feed-rail{grid-template-columns:repeat(2,minmax(0,1fr));max-width:none}
