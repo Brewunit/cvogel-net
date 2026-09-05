@@ -15,6 +15,7 @@ if (typeof document !== 'undefined') (() => {
   const debug = window.cvdDebug = {frame:120, drawnFrame:0, progress:0, loaded:0, failed:0, reducedMotion:reduced.matches, sculpture:{rotationX:-.25,rotationY:.4,shape:'knot',color:'chrome'}, mailto:''};
   const hero = $('.hero'), canvas = $('#hero-canvas'), context = canvas.getContext('2d');
   const HERO_COUNT = 120;
+  const HERO_STOP = 20;
   const VIDEO_END = 0.55;
   const frames = new Array(HERO_COUNT + 1), pending = new Set();
   let desired = 120, scheduled = false, size = {width:0,height:0}, started = false;
@@ -66,8 +67,7 @@ if (typeof document !== 'undefined') (() => {
     const distance=hero.offsetHeight-window.innerHeight;
     const progress=reduced.matches?0:Math.max(0,Math.min(1,-rect.top/Math.max(1,distance)));
     const videoProgress=Math.min(1, progress / VIDEO_END);
-    const forward=frameForProgress(videoProgress, HERO_COUNT);
-    desired=progress>=VIDEO_END?1:(HERO_COUNT+1-forward);
+    desired=progress>=VIDEO_END?HERO_STOP:HERO_COUNT - Math.round(videoProgress * (HERO_COUNT - HERO_STOP));
     debug.frame=desired;debug.progress=progress;
     $('#scroll-progress').style.width=(progress*100)+'%';
     const frameEl=$('#frame-number'); if(frameEl) frameEl.textContent=String(desired).padStart(2,'0');
