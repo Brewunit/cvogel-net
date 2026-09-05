@@ -1,0 +1,10 @@
+assets/frames-720-old/
+assets/frames-hi/
+assets/frames/
+assets/_can-chk/
+assets/hero.mp4
+assets/poster.jpg
+assets/poster-1080.jpg
+tests.cjs
+*.pyc
+.DS_Store

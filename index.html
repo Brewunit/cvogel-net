@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#202222">
+  <meta name="description" content="C Vogel Designs. Distinctive websites and merch, made to feel like you. Explore the studio and start a project.">
+  <title>C Vogel Designs — Websites & Merch</title>
+  <link rel="icon" href="assets/logo.png" type="image/png">
+  <link rel="preload" href="assets/Archivo-Bold.ttf" as="font" type="font/ttf" crossorigin>
+  <link rel="preload" href="assets/logo-poster.jpg" as="image">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="hero-fullscreen.css">
+  <script src="app.js?v=canov" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#work">Skip animation</a>
+  <header class="site-header">
+    <a class="brand" href="#top" aria-label="C Vogel Designs home"><img src="assets/logo.png" alt="CVD" width="112" height="53"><span>C Vogel<br>Designs</span></a>
+    <nav aria-label="Main navigation"><a href="#work">Work</a><a href="#mark">Logo</a><a href="#instagram">Instagram</a><a class="nav-contact" href="#contact">Let’s talk <span aria-hidden="true">↗</span></a></nav>
+  </header>
+  <main>
+    <section class="hero" id="top" aria-labelledby="hero-title">
+      <div class="hero-sticky">
+        <div class="hero-topline"><p>Independent design. Digital & physical.</p><a href="#services">Skip the motion <span aria-hidden="true">↓</span></a></div>
+        <h1 id="hero-title">C Vogel Designs</h1>
+        <div class="monitor-stage">
+          <img id="hero-poster" src="assets/logo-poster.jpg" alt="C Vogel Designs logo" fetchpriority="high" width="1920" height="1080">
+          <canvas id="hero-canvas" aria-hidden="true"></canvas>
+        </div>
+        <ul class="hero-services" id="hero-services">
+          <li data-from="0.58">Web design</li>
+          <li data-from="0.70">Product design</li>
+          <li data-from="0.82">Merchandise</li>
+        </ul>
+        <div class="hero-bottom"><p>C Vogel Designs</p><div class="scroll-cue"><span id="motion-label">Scroll.</span><div class="progress-track"><span id="scroll-progress"></span></div></div></div>
+      </div>
+    </section>
+    <section class="can-stage" id="work" aria-labelledby="work-title">
+      <div class="can-sticky">
+        <h2 id="work-title">Packaging</h2>
+        <div class="can-media">
+          <img id="can-poster" src="assets/can-poster.jpg?v=1" alt="Beer cans in a studio" width="1920" height="1080">
+          <canvas id="can-canvas" aria-hidden="true"></canvas>
+        </div>
+        <div class="can-overlay" id="can-overlay">
+          <ul class="can-services" id="can-services">
+            <li data-from="0.70">Web design</li>
+            <li data-from="0.80">Product design</li>
+            <li data-from="0.90">Merchandise</li>
+          </ul>
+        </div>
+        <div class="can-bar">
+          <p>Packaging</p>
+          <div class="scroll-cue can-cue"><span id="can-motion-label">Scroll</span><div class="progress-track"><span id="can-progress"></span></div></div>
+        </div>
+      </div>
+    </section>
+    <section class="play-section" id="mark" aria-labelledby="play-title">
+      <p class="mark-kicker" id="play-title">The mark</p>
+      <div class="logo-stage" id="logo-stage" tabindex="0" role="img" aria-label="CVD logo. Drag to turn it. Arrow keys also work. Press R to reset.">
+        <img id="logo-3d" src="assets/logo-3d.png" alt="CVD" width="800" height="800" draggable="false">
+      </div>
+      <p class="mark-hint" id="sculpture-hint">Drag</p>
+      <p id="sculpture-status" class="sr-only" aria-live="polite"></p>
+    </section>
+    <section class="contact section-pad" id="contact" aria-labelledby="contact-title"><div class="contact-heading"><p class="section-note">Have something in mind?</p><h2 id="contact-title">Let’s make<br>it happen.</h2><a class="email-link" href="mailto:me@cvogel.net">me@cvogel.net <span aria-hidden="true">↗</span></a></div><form id="inquiry-form"><fieldset class="project-options"><legend>I’m thinking about…</legend><label><input type="checkbox" name="service" value="Website"><span>A website</span></label><label><input type="checkbox" name="service" value="Merch"><span>Merch</span></label><label><input type="checkbox" name="service" value="Something else"><span>Something else</span></label></fieldset><label class="brief-label" for="project-brief">A little about your idea <span>(optional)</span></label><textarea id="project-brief" name="brief" rows="3" maxlength="1800" placeholder="What are you imagining?"></textarea><button class="email-button" type="submit">Compose an email <span aria-hidden="true">↗</span></button><p class="form-note">Opens your email app with your selections. Nothing is sent or stored here.</p><p id="inquiry-status" role="status"></p></form></section>
+    <section class="ig-feed" id="instagram">
+      <p class="ig-kicker"><a href="https://www.instagram.com/cvogel_designs/" rel="noopener noreferrer" target="_blank">@cvogel_designs</a></p>
+      <div class="feed-rail" id="ig-rail" aria-label="Instagram">
+        <figure><img src="assets/feed/old-00.jpg" alt="Porky’s Backyard hats, tees, and hoodies" width="800" height="800"></figure>
+        <figure><img src="assets/feed/landscaping-tee.jpg" alt="Custom landscaping tee" width="800" height="800"></figure>
+        <figure><img src="assets/feed/landscaping-koozies.jpg" alt="Custom koozies" width="800" height="800"></figure>
+        <figure><img src="assets/feed/banana-socks.jpg" alt="Custom socks" width="800" height="800"></figure>
+        <figure><img src="assets/feed/cycle-era-tee.jpg" alt="Cycle era tee" width="800" height="800"></figure>
+        <figure><img src="assets/feed/redline-tee.jpg" alt="Redline tee" width="800" height="800"></figure>
+      </div>
+    </section>
+  </main>
+  <footer><a class="footer-brand" href="#top">C VOGEL DESIGNS</a><div><span>Websites & merch. Made with intention.</span><a href="https://www.instagram.com/cvogel_designs/" rel="noopener noreferrer" target="_blank">Instagram</a><a href="mailto:me@cvogel.net">me@cvogel.net</a><a href="#top">Back to top ↑</a></div></footer>
+  <noscript><style>.hero{height:auto}.hero-sticky{position:relative}#hero-canvas{display:none}.object-controls{display:none}</style><p class="noscript-message">JavaScript enables the scroll sequence, sculpture, and email composer. You can still explore the services and <a href="mailto:me@cvogel.net">email me@cvogel.net</a>.</p></noscript>
+</body>
+</html>
