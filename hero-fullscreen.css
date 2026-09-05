@@ -41,12 +41,9 @@
 .can-cue{width:120px}
 .can-cue .progress-track{background:rgba(255,255,255,.28);margin-top:8px;height:1px}
 .can-cue .progress-track span{background:#fff}
-.play-section{background:#050505;color:#f4f1ea;min-height:100svh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:12vh var(--gutter);gap:22px}
-.mark-kicker,.mark-hint{margin:0;font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:#9aa09a}
-.logo-stage{width:min(72vw,560px);height:min(52vh,420px);perspective:900px;cursor:grab;touch-action:none;display:flex;align-items:center;justify-content:center}
-.logo-stage:active{cursor:grabbing}
-.logo-stage:focus-visible{outline:3px solid var(--cyan);outline-offset:8px}
-#logo-3d{width:100%;height:100%;object-fit:contain;transform:rotateX(-12deg) rotateY(18deg);transform-style:preserve-3d;will-change:transform;user-select:none;-webkit-user-drag:none}
+.dream{position:relative;min-height:100svh;overflow:hidden;background:#020814;color:#f4f6fb;display:flex;align-items:center;justify-content:center}
+#sky{position:absolute;inset:0;width:100%;height:100%;display:block}
+#dream-title{position:relative;z-index:1;margin:0;padding:0 var(--gutter);text-align:center;font-size:clamp(40px,7.2vw,104px);line-height:.95;letter-spacing:-.055em;font-weight:700;text-shadow:0 20px 60px rgba(0,10,40,.55);pointer-events:none}
 .ig-feed{background:#0b0b0b;color:#f4f1ea;padding:6vh var(--gutter) 8vh}
 .ig-kicker{margin:0 0 28px;font-size:13px;letter-spacing:.08em;text-align:center}
 .ig-kicker a{border-bottom:1px solid currentColor;padding-bottom:3px}
@@ -63,7 +60,6 @@
   .hero-services{bottom:16vh}
   .can-bar{font-size:11px}
   .feed-rail{grid-template-columns:repeat(2,minmax(0,1fr));max-width:none}
-  #logo-3d{transform:none}
   .hero-sticky{height:100svh;min-height:0;max-height:none}
   .hero-bottom{padding-top:55px;gap:24px}
   .hero-bottom>p{font-size:12px}
@@ -76,6 +72,5 @@
   .can-cue .progress-track{display:none}
   .can-overlay{opacity:1}
   .can-services li{opacity:1;transform:none;filter:none}
-  #logo-3d{transform:none}
 }
 @media(prefers-reduced-motion:reduce){.hero{height:100svh;min-height:0}.hero-sticky{position:relative}.hero-bottom .progress-track{display:none}.hero-services li{opacity:1;transform:none;filter:none}}

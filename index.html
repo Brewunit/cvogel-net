@@ -10,14 +10,14 @@
   <link rel="preload" href="assets/Archivo-Bold.ttf" as="font" type="font/ttf" crossorigin>
   <link rel="preload" href="assets/logo-poster.jpg" as="image">
   <link rel="stylesheet" href="styles.css">
-  <link rel="stylesheet" href="hero-fullscreen.css?v=type">
-  <script src="app.js?v=rev2" defer></script>
+  <link rel="stylesheet" href="hero-fullscreen.css?v=dream">
+  <script src="app.js?v=dream" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#work">Skip animation</a>
   <header class="site-header">
     <a class="brand" href="#top" aria-label="C Vogel Designs home"><img src="assets/logo.png" alt="CVD" width="112" height="53"><span>C Vogel<br>Designs</span></a>
-    <nav aria-label="Main navigation"><a href="#work">Work</a><a href="#mark">Logo</a><a href="#instagram">Instagram</a><a class="nav-contact" href="#contact">Let’s talk <span aria-hidden="true">↗</span></a></nav>
+    <nav aria-label="Main navigation"><a href="#work">Work</a><a href="#dream">Dream</a><a href="#instagram">Instagram</a><a class="nav-contact" href="#contact">Let’s talk <span aria-hidden="true">↗</span></a></nav>
   </header>
   <main>
     <section class="hero" id="top" aria-labelledby="hero-title">
@@ -56,13 +56,9 @@
         </div>
       </div>
     </section>
-    <section class="play-section" id="mark" aria-labelledby="play-title">
-      <p class="mark-kicker" id="play-title">The mark</p>
-      <div class="logo-stage" id="logo-stage" tabindex="0" role="img" aria-label="CVD logo. Drag to turn it. Arrow keys also work. Press R to reset.">
-        <img id="logo-3d" src="assets/logo-3d.png" alt="CVD" width="800" height="800" draggable="false">
-      </div>
-      <p class="mark-hint" id="sculpture-hint">Drag</p>
-      <p id="sculpture-status" class="sr-only" aria-live="polite"></p>
+    <section class="dream" id="dream" aria-labelledby="dream-title">
+      <canvas id="sky" aria-hidden="true"></canvas>
+      <h2 id="dream-title">Let’s create<br>your dream.</h2>
     </section>
     <section class="contact section-pad" id="contact" aria-labelledby="contact-title"><div class="contact-heading"><p class="section-note">Have something in mind?</p><h2 id="contact-title">Let’s make<br>it happen.</h2><a class="email-link" href="mailto:me@cvogel.net">me@cvogel.net <span aria-hidden="true">↗</span></a></div><form id="inquiry-form"><fieldset class="project-options"><legend>I’m thinking about…</legend><label><input type="checkbox" name="service" value="Website"><span>A website</span></label><label><input type="checkbox" name="service" value="Merch"><span>Merch</span></label><label><input type="checkbox" name="service" value="Something else"><span>Something else</span></label></fieldset><label class="brief-label" for="project-brief">A little about your idea <span>(optional)</span></label><textarea id="project-brief" name="brief" rows="3" maxlength="1800" placeholder="What are you imagining?"></textarea><button class="email-button" type="submit">Compose an email <span aria-hidden="true">↗</span></button><p class="form-note">Opens your email app with your selections. Nothing is sent or stored here.</p><p id="inquiry-status" role="status"></p></form></section>
     <section class="ig-feed" id="instagram">

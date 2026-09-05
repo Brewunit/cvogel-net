@@ -175,28 +175,59 @@ if (typeof document !== 'undefined') (() => {
     reduced.addEventListener('change',motion); motion(); resize(); tick();
   })();
 
-  const stage=$('#logo-stage'), mark=$('#logo-3d');
-  const spin=debug.sculpture={rotationX:-12,rotationY:18};
-  let drag=null;
-  function applySpin(){
-    if(!mark) return;
-    mark.style.transform='rotateX('+spin.rotationX+'deg) rotateY('+spin.rotationY+'deg)';
-  }
-  function resetLogo(){spin.rotationX=-12;spin.rotationY=18;applySpin();if($('#sculpture-status')) $('#sculpture-status').textContent='Logo reset.';}
-  if(stage && mark){
-    applySpin();
-    stage.addEventListener('pointerdown',e=>{if(e.button!==0)return;drag={x:e.clientX,y:e.clientY,id:e.pointerId};stage.setPointerCapture(e.pointerId);stage.focus({preventScroll:true});});
-    stage.addEventListener('pointermove',e=>{if(!drag||drag.id!==e.pointerId)return;spin.rotationY+=(e.clientX-drag.x)*.35;spin.rotationX=Math.max(-60,Math.min(60,spin.rotationX-(e.clientY-drag.y)*.35));drag.x=e.clientX;drag.y=e.clientY;applySpin();});
-    function endDrag(){drag=null;}
-    stage.addEventListener('pointerup',endDrag);stage.addEventListener('pointercancel',endDrag);
-    stage.addEventListener('keydown',e=>{
-      const arrows=['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'];
-      if(arrows.includes(e.key)){e.preventDefault();const d=e.shiftKey?18:8;if(e.key==='ArrowLeft')spin.rotationY-=d;if(e.key==='ArrowRight')spin.rotationY+=d;if(e.key==='ArrowUp')spin.rotationX-=d;if(e.key==='ArrowDown')spin.rotationX+=d;applySpin();}
-      else if(e.key.toLowerCase()==='r')resetLogo();
-    });
-  }
+  (function bindSky(){
+    const canvas=$('#sky'), section=$('.dream');
+    if(!canvas||!section) return;
+    const ctx=canvas.getContext('2d');
+    let w=0,h=0,stars=[],raf=0;
+    const pointer={x:0,y:0,tx:0,ty:0};
+    function seed(){
+      const n=Math.min(520, Math.floor((w*h)/2800));
+      stars=Array.from({length:n},()=>({
+        x:Math.random()*w, y:Math.random()*h,
+        z:.25+Math.random()*1.75,
+        s:.4+Math.random()*1.6,
+        tw:Math.random()*Math.PI*2
+      }));
+    }
+    function resize(){
+      const r=section.getBoundingClientRect(), dpr=Math.min(window.devicePixelRatio||1,2);
+      w=r.width; h=r.height;
+      canvas.width=Math.round(w*dpr); canvas.height=Math.round(h*dpr);
+      ctx.setTransform(dpr,0,0,dpr,0,0);
+      seed();
+    }
+    function draw(t){
+      raf=requestAnimationFrame(draw);
+      pointer.x+=(pointer.tx-pointer.x)*.06;
+      pointer.y+=(pointer.ty-pointer.y)*.06;
+      const g=ctx.createLinearGradient(0,0,0,h);
+      g.addColorStop(0,'#020814');
+      g.addColorStop(.72,'#0a2748');
+      g.addColorStop(1,'#8eb8d8');
+      ctx.fillStyle=g; ctx.fillRect(0,0,w,h);
+      const ox=pointer.x*28, oy=pointer.y*18;
+      for(const st of stars){
+        const tw=.45+.55*Math.sin(t*0.0016+st.tw);
+        ctx.globalAlpha=tw;
+        ctx.fillStyle='#fff';
+        const px=st.x+ox*st.z, py=st.y+oy*st.z;
+        ctx.beginPath(); ctx.arc(px,py,st.s*st.z*.55,0,Math.PI*2); ctx.fill();
+      }
+      ctx.globalAlpha=1;
+    }
+    section.addEventListener('pointermove',e=>{
+      const r=section.getBoundingClientRect();
+      pointer.tx=((e.clientX-r.left)/r.width-.5)*2;
+      pointer.ty=((e.clientY-r.top)/r.height-.5)*2;
+    },{passive:true});
+    new ResizeObserver(resize).observe(section);
+    resize();
+    if(reduced.matches){draw(0);cancelAnimationFrame(raf);}
+    else requestAnimationFrame(draw);
+  })();
 
-    document.querySelectorAll('[data-service-link]').forEach(link=>link.addEventListener('click',()=>{const input=document.querySelector('input[name="service"][value="'+link.dataset.serviceLink+'"]');if(input)input.checked=true;}));
+  document.querySelectorAll('[data-service-link]').forEach(link=>link.addEventListener('click',()=>{const input=document.querySelector('input[name="service"][value="'+link.dataset.serviceLink+'"]');if(input)input.checked=true;}));
   $('#inquiry-form').addEventListener('submit',event=>{
     event.preventDefault();const services=Array.from(document.querySelectorAll('input[name="service"]:checked'),input=>input.value);
     const url=composeInquiry(services,$('#project-brief').value);debug.mailto=url;
