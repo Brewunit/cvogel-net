@@ -176,7 +176,7 @@ if (typeof document !== 'undefined') (() => {
   })();
 
   (function bindSky(){
-    const canvas=$('#sky'), section=$('.dream');
+    const canvas=$('#sky'), section=$('.dream-sticky')||$('.dream');
     if(!canvas||!section) return;
     const gl=canvas.getContext('webgl',{antialias:false,alpha:false});
     const pointer={x:0,y:0,tx:0,ty:0};
