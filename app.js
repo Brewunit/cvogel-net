@@ -42,6 +42,71 @@ if (typeof document !== 'undefined') (() => {
     context.drawImage(image,(size.width-image.naturalWidth*scale)/2,(size.height-image.naturalHeight*scale)/2,image.naturalWidth*scale,image.naturalHeight*scale);
     canvas.classList.add('ready'); debug.drawnFrame=index;
   }
+  const snakeCanvas=$('#hero-snake'), snakeCtx=snakeCanvas&&snakeCanvas.getContext('2d');
+  const SNAKE_GROW=0.74, SNAKE_HOLD=0.84, SNAKE_GONE=0.96;
+  let snakePulse=false;
+  function snakeCorners(){
+    const sticky=$('.hero-sticky'), btn=$('.quote-btn');
+    if(!sticky||!btn) return [];
+    const sr=sticky.getBoundingClientRect(), br=btn.getBoundingClientRect();
+    const start={x:sr.width*0.16, y:sr.height*0.38};
+    const end={x:br.left-sr.left+br.width/2, y:br.top-sr.top+br.height/2};
+    const midX=start.x+(end.x-start.x)*0.58;
+    return [start,{x:midX,y:start.y},{x:midX,y:end.y},end];
+  }
+  function snakeLength(pts){
+    let n=0; for(let i=1;i<pts.length;i++) n+=Math.hypot(pts[i].x-pts[i-1].x,pts[i].y-pts[i-1].y); return n;
+  }
+  function snakeAt(pts, t, total){
+    let left=Math.max(0,Math.min(1,t))*total;
+    for(let i=1;i<pts.length;i++){
+      const d=Math.hypot(pts[i].x-pts[i-1].x,pts[i].y-pts[i-1].y);
+      if(left<=d){const k=d?left/d:0; return {x:pts[i-1].x+(pts[i].x-pts[i-1].x)*k, y:pts[i-1].y+(pts[i].y-pts[i-1].y)*k};}
+      left-=d;
+    }
+    return pts[pts.length-1];
+  }
+  function drawSnake(progress){
+    if(!snakeCanvas||!snakeCtx) return;
+    const sticky=$('.hero-sticky'), btn=$('.quote-btn');
+    if(!sticky) return;
+    const rect=sticky.getBoundingClientRect(), dpr=Math.min(window.devicePixelRatio||1,2);
+    const w=Math.round(rect.width*dpr), h=Math.round(rect.height*dpr);
+    if(snakeCanvas.width!==w||snakeCanvas.height!==h){snakeCanvas.width=w;snakeCanvas.height=h;}
+    snakeCtx.setTransform(dpr,0,0,dpr,0,0);
+    snakeCtx.clearRect(0,0,rect.width,rect.height);
+    if(reduced.matches||progress<VIDEO_END){if(btn) btn.classList.remove('is-pointed'); snakePulse=false; return;}
+    const pts=snakeCorners(); if(pts.length<2) return;
+    const total=snakeLength(pts);
+    let head=0, tail=0, pulse=0;
+    if(progress<SNAKE_GROW){head=(progress-VIDEO_END)/(SNAKE_GROW-VIDEO_END);}
+    else if(progress<SNAKE_HOLD){head=1; pulse=(progress-SNAKE_GROW)/(SNAKE_HOLD-SNAKE_GROW);}
+    else if(progress<SNAKE_GONE){head=1; tail=(progress-SNAKE_HOLD)/(SNAKE_GONE-SNAKE_HOLD);}
+    else {head=1; tail=1;}
+    if(head<=tail){if(btn) btn.classList.remove('is-pointed'); snakePulse=false; return;}
+    snakeCtx.lineCap='square'; snakeCtx.lineJoin='miter';
+    snakeCtx.strokeStyle='#f4f1ea'; snakeCtx.lineWidth=2;
+    snakeCtx.beginPath();
+    const steps=48;
+    for(let i=0;i<=steps;i++){
+      const t=tail+(head-tail)*(i/steps);
+      const p=snakeAt(pts,t,total);
+      if(i===0) snakeCtx.moveTo(p.x,p.y); else snakeCtx.lineTo(p.x,p.y);
+    }
+    snakeCtx.stroke();
+    const tip=snakeAt(pts,head,total);
+    snakeCtx.fillStyle='#f4f1ea';
+    snakeCtx.fillRect(tip.x-2,tip.y-2,4,4);
+    if(pulse>0 && pulse<1){
+      const r=6+pulse*18;
+      snakeCtx.strokeStyle='rgba(244,241,234,'+(1-pulse)+')';
+      snakeCtx.lineWidth=1.5;
+      snakeCtx.beginPath(); snakeCtx.arc(tip.x,tip.y,r,0,Math.PI*2); snakeCtx.stroke();
+      if(btn && !snakePulse){btn.classList.add('is-pointed'); snakePulse=true;}
+    } else if(btn && (pulse<=0 || tail>0.05)){
+      btn.classList.remove('is-pointed'); if(tail>0.05) snakePulse=false;
+    }
+  }
   function loadFrame(index) {
     return new Promise(resolve => {
       if(frames[index] || pending.has(index)) return resolve();
@@ -73,11 +138,8 @@ if (typeof document !== 'undefined') (() => {
     const frameEl=$('#frame-number'); if(frameEl) frameEl.textContent=String(desired).padStart(2,'0');
     const label=$('#motion-label');
     if(label && !reduced.matches) label.textContent=progress<VIDEO_END?'Scroll.':'Keep scrolling.';
-    document.querySelectorAll('#hero-services li').forEach(el=>{
-      const from=parseFloat(el.dataset.from);
-      el.classList.toggle('is-on', reduced.matches?false:progress>=from);
-    });
     drawHero();
+    drawSnake(progress);
   }
   function schedule(){if(!scheduled){scheduled=true;requestAnimationFrame(updateScroll);}}
   window.addEventListener('scroll',schedule,{passive:true});
